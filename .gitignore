@@ -1,0 +1,36 @@
+# IDE
+.idea
+.vscode
+
+# Bin
+nanotekspice
+*.out
+debug
+
+# Build
+.build
+*.[aod]
+*.cor
+
+# nix
+.direnv
+.pre-commit-config.yaml
+result
+
+# Cache
+.cache
+.fast
+__pycache__
+
+# Coverage
+*.gc??
+testcmd
+unit_tests
+
+# Debug
+.dbug
+.envrc
+compile_commands.json
+
+# AFL
+afl/generated
