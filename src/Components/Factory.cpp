@@ -3,12 +3,14 @@
 // #include <utility>
 
 #include "Components/Elementary.hpp"
+#include "Components/Gates.hpp"
 #include "Factory.hpp"
 #include "IComponent.hpp"
 
 namespace nts {
 std::unique_ptr<nts::IComponent> createComponent(const std::string &type,
                                                  const std::string name) {
+  // Specials
   if (type == "input")
     return std::make_unique<InputComponent>(name);
   if (type == "output")
@@ -20,6 +22,7 @@ std::unique_ptr<nts::IComponent> createComponent(const std::string &type,
   if (type == "clock")
     return std::make_unique<ClockComponent>(name);
 
+  // Elementary
   if (type == "and")
     return std::make_unique<AndComponent>(name);
   if (type == "or")
@@ -29,6 +32,9 @@ std::unique_ptr<nts::IComponent> createComponent(const std::string &type,
   if (type == "not")
     return std::make_unique<NotComponent>(name);
 
+  // Gates
+  if (type == "4081")
+    return std::make_unique<C4081>(name);
   throw std::runtime_error("Unknown component type: " + type);
 }
 
