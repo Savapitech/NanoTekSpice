@@ -4,6 +4,7 @@
 #include <stdexcept>
 
 #include "Parser.hpp"
+#include "Components/Factory.hpp"
 
 enum { STEP_CHIPSETS = 1 << 0, STEP_LINKS = 1 << 1 };
 
@@ -46,7 +47,7 @@ void Parser::loadFile(const std::string &filename, Circuit &circuit) {
       std::string name;
       ss >> name;
       if (!name.empty()) {
-        auto comp = Circuit::createComponent(token, name);
+        auto comp = nts::createComponent(token, name);
         circuit.addComponent(std::move(comp));
       }
     } else if (step & STEP_LINKS) {

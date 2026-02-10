@@ -1,10 +1,8 @@
 #include <algorithm>
 #include <iostream>
+#include <stdexcept>
 
 #include "Circuit.hpp"
-#include "Components/4081.hpp"
-#include "Components/Elementary.hpp"
-#include "Components/Gates.hpp"
 #include "Components/Special.hpp"
 #include "IComponent.hpp"
 
@@ -28,7 +26,7 @@ void Circuit::addComponent(std::unique_ptr<nts::IComponent> component) {
 nts::IComponent *Circuit::getComponent(const std::string &name) {
   if (_componentByName.find(name) != _componentByName.end())
     return _componentByName[name];
-  return nullptr;
+  throw std::runtime_error("Unknown component");
 }
 
 void Circuit::simulate() {
@@ -75,43 +73,5 @@ void Circuit::setInputValue(const std::string &name, const std::string &value) {
     comp->setValue(nts::False);
   else if (value == "U")
     comp->setValue(nts::Undefined);
-}
-
-std::unique_ptr<nts::IComponent>
-Circuit::createComponent(const std::string &type, const std::string &name) {
-  if (type == "input")
-    return std::make_unique<InputComponent>(name);
-  if (type == "output")
-    return std::make_unique<OutputComponent>(name);
-  if (type == "true")
-    return std::make_unique<TrueComponent>(name);
-  if (type == "false")
-    return std::make_unique<FalseComponent>(name);
-  if (type == "clock")
-    return std::make_unique<ClockComponent>(name);
-
-  if (type == "and")
-    return std::make_unique<And>(name);
-  if (type == "or")
-    return std::make_unique<Or>(name);
-  if (type == "xor")
-    return std::make_unique<Xor>(name);
-  if (type == "not")
-    return std::make_unique<Not>(name);
-
-  if (type == "4081")
-    return std::make_unique<C4081>(name);
-  if (type == "4071")
-    return std::make_unique<C4071>(name);
-  if (type == "4030")
-    return std::make_unique<C4030>(name);
-  if (type == "4069")
-    return std::make_unique<C4069>(name);
-  if (type == "4001")
-    return std::make_unique<C4001>(name);
-  if (type == "4011")
-    return std::make_unique<C4011>(name);
-
-  throw std::runtime_error("Unknown component type: " + type);
 }
 } // namespace nts
