@@ -1,7 +1,0 @@
-./components/true.nts
-./components/false.nts
-# basic gates
-./components/or.nts
-./components/not.nts
-./components/and.nts
-./components/xor.nts

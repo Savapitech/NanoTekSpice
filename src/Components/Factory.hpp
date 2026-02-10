@@ -7,5 +7,6 @@
 #include "Special.hpp"
 
 namespace nts {
-  std::unique_ptr<IComponent> createComponent(const std::string &type, const std::string &name);
+std::unique_ptr<IComponent> createComponent(const std::string &type,
+                                            const std::string name);
 }

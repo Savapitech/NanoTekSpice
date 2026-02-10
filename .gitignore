@@ -32,5 +32,10 @@ unit_tests
 .envrc
 compile_commands.json
 
+tests/*.cpp
+tests/*.hpp
+fixtures
+components
+
 # AFL
 afl/generated

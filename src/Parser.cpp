@@ -3,8 +3,8 @@
 #include <sstream>
 #include <stdexcept>
 
-#include "Parser.hpp"
 #include "Components/Factory.hpp"
+#include "Parser.hpp"
 
 enum { STEP_CHIPSETS = 1 << 0, STEP_LINKS = 1 << 1 };
 

@@ -11,7 +11,7 @@ protected:
   bool _valueChanged;
 
 public:
-  InputComponent(const std::string &name);
+  InputComponent(const std::string name);
   ~InputComponent() = default;
 
   void simulate(std::size_t tick) override;
@@ -25,7 +25,7 @@ private:
   nts::Tristate _value;
 
 public:
-  OutputComponent(const std::string &name);
+  OutputComponent(const std::string name);
   ~OutputComponent() = default;
 
   void simulate(std::size_t tick) override;
@@ -35,21 +35,21 @@ public:
 // True
 class TrueComponent : public AComponent {
 public:
-  TrueComponent(const std::string &name);
+  TrueComponent(const std::string name);
   nts::Tristate compute(std::size_t pin) override;
 };
 
 // False
 class FalseComponent : public AComponent {
 public:
-  FalseComponent(const std::string &name);
+  FalseComponent(const std::string name);
   nts::Tristate compute(std::size_t pin) override;
 };
 
 // Clock
 class ClockComponent : public InputComponent {
 public:
-  ClockComponent(const std::string &name);
+  ClockComponent(const std::string name);
   void simulate(std::size_t tick) override;
 };
 } // namespace nts
