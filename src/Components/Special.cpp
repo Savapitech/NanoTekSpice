@@ -1,4 +1,5 @@
 #include "Components/Special.hpp"
+#include "IComponent.hpp"
 
 namespace nts {
 InputComponent::InputComponent(const std::string &name) : AComponent(name) {
@@ -15,7 +16,8 @@ nts::Tristate InputComponent::compute(std::size_t pin) {
 void InputComponent::setValue(nts::Tristate value) { _nextValue = value; }
 
 void InputComponent::simulate(std::size_t) {
-  _value = _nextValue;
+  if (_nextValue != nts::Undefined)
+    _value = _nextValue;
   _nextValue = nts::Undefined;
 }
 

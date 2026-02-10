@@ -1,0 +1,52 @@
+./components/4512_selector.nts
+<- display
+tick: 0
+input(s):
+  in_a: U
+  in_b: U
+  in_c: U
+  in_0: U
+  in_1: U
+  in_2: U
+  in_3: U
+  in_4: U
+  in_5: U
+  in_6: U
+  in_7: U
+  inhibit: U
+  enable: U
+output(s):
+  out_data: U
+# Set all inputs to 0, except in_4 = 1
+<- in_a=0
+<- in_b=0
+<- in_c=1
+<- in_0=0
+<- in_1=0
+<- in_2=0
+<- in_3=0
+<- in_4=1
+<- in_5=0
+<- in_6=0
+<- in_7=0
+<- inhibit=0
+<- enable=1
+<- simulate
+<- display
+tick: 1
+input(s):
+  in_a: 0
+  in_b: 0
+  in_c: 1
+  in_0: 0
+  in_1: 0
+  in_2: 0
+  in_3: 0
+  in_4: 1
+  in_5: 0
+  in_6: 0
+  in_7: 0
+  inhibit: 0
+  enable: 1
+output(s):
+  out_data: 1

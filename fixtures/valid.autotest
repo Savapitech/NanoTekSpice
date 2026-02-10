@@ -1,0 +1,7 @@
+./components/valid.nts
+<- display
+tick: 0
+input(s):
+output(s):
+  OUT: 1
+<- exit

@@ -1,0 +1,19 @@
+# This file has an horrible formatting to check the parsing robustness
+
+  .  chipsets       : #
+ true              in                      # in in in in
+
+
+        output OUT
+  #  #
+     . links:    # :
+in  :  1     OUT  :  0000001
+#     !
+
+      # dl
+
+
+
+
+
+

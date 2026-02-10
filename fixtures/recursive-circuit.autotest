@@ -1,0 +1,40 @@
+./components/or_loopback.nts
+<- display
+tick: 0
+input(s):
+  in_1: U
+output(s):
+  out: U
+<- in_1=0
+<- display
+# nothing has changed (yet)
+tick: 0
+input(s):
+  in_1: U
+output(s):
+  out: U
+<- simulate
+# now mem propagate and out becomes 0
+<- display
+tick: 1
+input(s):
+  in_1: 0
+output(s):
+  out: U # (0 || U) -> U
+<- in_1=1
+<- simulate
+<- display
+tick: 2
+input(s):
+  in_1: 1
+output(s):
+  out: 1
+# out should now be stuck forever
+<- simulate
+<- in_1=0
+<- display
+tick: 3
+input(s):
+  in_1: 1
+output(s):
+  out: 1

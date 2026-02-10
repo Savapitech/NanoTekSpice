@@ -1,0 +1,13 @@
+./
+./components/invalid/empty.nts
+./components/invalid/empty_board.nts
+./components/invalid/bad_label.nts
+./components/invalid/missing:.nts
+./components/invalid/too_many_chipset_parameter.nts
+./components/invalid/not_enough_chipset_parameter.nts
+# do not create the one below!
+./components/invalid/do_not_exists.nts
+./components/invalid/unknown_component.nts
+./components/invalid/incorrect_link.nts
+./components/invalid/invalid_link.nts
+./components/invalid/invalid_syntax.nts
