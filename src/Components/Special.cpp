@@ -1,11 +1,18 @@
-#include "Components/Special.hpp"
-#include "IComponent.hpp"
+#include "Special.hpp"
+#include "AComponent.hpp"
 
 namespace nts {
-InputComponent::InputComponent(const std::string &name) : AComponent(name) {
-  _value = nts::Undefined;
-  _nextValue = nts::Undefined;
+// Input
+InputComponent::InputComponent(const std::string &name)
+    : AComponent(name), _value(nts::Undefined), _nextValue(nts::Undefined),
+      _valueChanged(false) {}
+
+void InputComponent::simulate(std::size_t) {
+  if (_valueChanged)
+    _value = _nextValue;
 }
+
+void InputComponent::setValue(nts::Tristate value) { _nextValue = value; }
 
 nts::Tristate InputComponent::compute(std::size_t pin) {
   if (pin == 1)
@@ -13,28 +20,27 @@ nts::Tristate InputComponent::compute(std::size_t pin) {
   return nts::Undefined;
 }
 
-void InputComponent::setValue(nts::Tristate value) { _nextValue = value; }
+// Output
+OutputComponent::OutputComponent(const std::string &name)
+    : AComponent(name), _value(nts::Undefined) {}
 
-void InputComponent::simulate(std::size_t) {
-  if (_nextValue != nts::Undefined)
-    _value = _nextValue;
-  _nextValue = nts::Undefined;
-}
-
-OutputComponent::OutputComponent(const std::string &name) : AComponent(name) {}
+void OutputComponent::simulate(std::size_t) { _value = getPinValue(1); }
 
 nts::Tristate OutputComponent::compute(std::size_t pin) {
   if (pin == 1)
-    return getPinValue(1);
+    return _value;
   return nts::Undefined;
 }
 
+// True
 TrueComponent::TrueComponent(const std::string &name) : AComponent(name) {}
 nts::Tristate TrueComponent::compute(std::size_t) { return nts::True; }
 
+// False
 FalseComponent::FalseComponent(const std::string &name) : AComponent(name) {}
 nts::Tristate FalseComponent::compute(std::size_t) { return nts::False; }
 
+// Clock
 ClockComponent::ClockComponent(const std::string &name)
     : InputComponent(name) {}
 
