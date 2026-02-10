@@ -3,35 +3,35 @@
 #include "AComponent.hpp"
 
 namespace nts {
-
-nts::Tristate logicOr(nts::Tristate a, nts::Tristate b);
-nts::Tristate logicXor(nts::Tristate a, nts::Tristate b);
-nts::Tristate logicNot(nts::Tristate a);
-nts::Tristate logicAnd(nts::Tristate a, nts::Tristate b);
-nts::Tristate logicNand(nts::Tristate a, nts::Tristate b);
-nts::Tristate logicNor(nts::Tristate a, nts::Tristate b);
-
-class Or : public AComponent {
+// And
+class AndComponent : public AComponent {
 public:
-  Or(const std::string &name);
-  nts::Tristate compute(std::size_t pin) override;
+  AndComponent(const std::string &name);
+  ~AndComponent() = default;
+  nts::Tristate compute(size_t pin);
 };
 
-class And : public AComponent {
+// Or
+class OrComponent : public AComponent {
 public:
-  And(const std::string &name);
-  nts::Tristate compute(std::size_t pin) override;
+  OrComponent(const std::string &name);
+  ~OrComponent() = default;
+  nts::Tristate compute(size_t pin);
 };
 
-class Xor : public AComponent {
+// Xor
+class XorComponent : public AComponent {
 public:
-  Xor(const std::string &name);
-  nts::Tristate compute(std::size_t pin) override;
+  XorComponent(const std::string &name);
+  ~XorComponent() = default;
+  nts::Tristate compute(size_t pin);
 };
 
-class Not : public AComponent {
+// Not
+class NotComponent : public AComponent {
 public:
-  Not(const std::string &name);
-  nts::Tristate compute(std::size_t pin) override;
+  NotComponent(const std::string &name);
+  ~NotComponent() = default;
+  nts::Tristate compute(size_t pin);
 };
 } // namespace nts

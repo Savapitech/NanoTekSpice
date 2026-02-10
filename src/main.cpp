@@ -8,10 +8,8 @@
 #define FAILURE 84;
 
 int main(int ac, char **av) {
-  if (ac != 2) {
-    std::cerr << "Usage: ./nanotekspice file.nts" << std::endl;
-    return FAILURE;
-  }
+  if (ac != 2)
+    return std::cerr << "Usage: ./nanotekspice file.nts" << std::endl, FAILURE;
 
   try {
     nts::Circuit circuit;
