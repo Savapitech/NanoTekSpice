@@ -5,10 +5,7 @@
 
 #include "Parser.hpp"
 
-enum {
-  STEP_CHIPSETS = 1 << 0,
-  STEP_LINKS = 1 << 1
-};
+enum { STEP_CHIPSETS = 1 << 0, STEP_LINKS = 1 << 1 };
 
 namespace nts {
 void Parser::loadFile(const std::string &filename, Circuit &circuit) {
@@ -42,6 +39,9 @@ void Parser::loadFile(const std::string &filename, Circuit &circuit) {
       continue;
     }
 
+    if (!step)
+      throw std::runtime_error("Invalid label.");
+
     if (step & STEP_CHIPSETS) {
       std::string name;
       ss >> name;
@@ -73,4 +73,4 @@ void Parser::loadFile(const std::string &filename, Circuit &circuit) {
     }
   }
 }
-}
+} // namespace nts

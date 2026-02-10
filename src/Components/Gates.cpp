@@ -1,36 +1,7 @@
 #include "Components/Gates.hpp"
+#include "Components/Elementary.hpp"
 
 namespace nts {
-static nts::Tristate logicOr(nts::Tristate a, nts::Tristate b) {
-  if (a == nts::True || b == nts::True)
-    return nts::True;
-  if (a == nts::False && b == nts::False)
-    return nts::False;
-  return nts::Undefined;
-}
-
-static nts::Tristate logicXor(nts::Tristate a, nts::Tristate b) {
-  if (a == nts::Undefined || b == nts::Undefined)
-    return nts::Undefined;
-  return (a != b) ? nts::True : nts::False;
-}
-
-static nts::Tristate logicNot(nts::Tristate a) {
-  if (a == nts::True)
-    return nts::False;
-  if (a == nts::False)
-    return nts::True;
-  return nts::Undefined;
-}
-
-static nts::Tristate logicAnd(nts::Tristate a, nts::Tristate b) {
-  if (a == nts::False || b == nts::False)
-    return nts::False;
-  if (a == nts::True && b == nts::True)
-    return nts::True;
-  return nts::Undefined;
-}
-
 C4071::C4071(const std::string &name) : AComponent(name) {}
 nts::Tristate C4071::compute(std::size_t pin) {
   if (pin == 3)
@@ -76,9 +47,6 @@ nts::Tristate C4069::compute(std::size_t pin) {
 
 C4001::C4001(const std::string &name) : AComponent(name) {}
 nts::Tristate C4001::compute(std::size_t pin) {
-  auto logicNor = [](nts::Tristate a, nts::Tristate b) {
-    return logicNot(logicOr(a, b));
-  };
   if (pin == 3)
     return logicNor(getPinValue(1), getPinValue(2));
   if (pin == 4)
@@ -90,10 +58,8 @@ nts::Tristate C4001::compute(std::size_t pin) {
   return nts::Undefined;
 }
 
+C4011::C4011(const std::string &name) : AComponent(name) {}
 nts::Tristate C4011::compute(std::size_t pin) {
-  auto logicNand = [](nts::Tristate a, nts::Tristate b) {
-    return logicNot(logicAnd(a, b));
-  };
   if (pin == 3)
     return logicNand(getPinValue(1), getPinValue(2));
   if (pin == 4)
@@ -104,4 +70,4 @@ nts::Tristate C4011::compute(std::size_t pin) {
     return logicNand(getPinValue(12), getPinValue(13));
   return nts::Undefined;
 }
-}
+} // namespace nts

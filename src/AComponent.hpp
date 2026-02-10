@@ -16,7 +16,10 @@ public:
   virtual void setLink(std::size_t pin, nts::IComponent &other,
                        std::size_t otherPin) override;
 
-  virtual void setValue(nts::Tristate value) override { throw std::runtime_error("Cannot set value on a component that is not a input"); };
+  virtual void setValue(nts::Tristate value) override {
+    throw std::runtime_error(
+        "Cannot set value on a component that is not a input");
+  };
 
   const std::string &getName() const override;
 
@@ -26,4 +29,4 @@ protected:
 
   nts::Tristate getPinValue(std::size_t pin);
 };
-}
+} // namespace nts

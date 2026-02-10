@@ -31,4 +31,4 @@ private:
   std::vector<nts::IComponent *> _inputs;
   std::vector<nts::IComponent *> _outputs;
 };
-}
+} // namespace nts

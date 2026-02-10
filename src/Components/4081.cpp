@@ -23,4 +23,4 @@ nts::Tristate C4081::compute(std::size_t pin) {
 
   return nts::Undefined;
 }
-}
+} // namespace nts

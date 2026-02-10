@@ -32,4 +32,4 @@ public:
   C4011(const std::string &name);
   nts::Tristate compute(std::size_t pin) override;
 };
-}
+} // namespace nts

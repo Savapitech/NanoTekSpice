@@ -18,6 +18,6 @@ public:
   virtual const std::string &getName() const = 0;
   virtual void setValue(nts::Tristate value) = 0;
 };
-}
+} // namespace nts
 
 std::ostream &operator<<(std::ostream &s, nts::Tristate v);

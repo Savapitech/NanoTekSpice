@@ -15,10 +15,8 @@ nts::Tristate InputComponent::compute(std::size_t pin) {
 void InputComponent::setValue(nts::Tristate value) { _nextValue = value; }
 
 void InputComponent::simulate(std::size_t) {
-  if (_nextValue != nts::Undefined) {
-    _value = _nextValue;
-    _nextValue = nts::Undefined;
-  }
+  _value = _nextValue;
+  _nextValue = nts::Undefined;
 }
 
 OutputComponent::OutputComponent(const std::string &name) : AComponent(name) {}
@@ -30,14 +28,10 @@ nts::Tristate OutputComponent::compute(std::size_t pin) {
 }
 
 TrueComponent::TrueComponent(const std::string &name) : AComponent(name) {}
-nts::Tristate TrueComponent::compute(std::size_t) {
-  return nts::True;
-}
+nts::Tristate TrueComponent::compute(std::size_t) { return nts::True; }
 
 FalseComponent::FalseComponent(const std::string &name) : AComponent(name) {}
-nts::Tristate FalseComponent::compute(std::size_t) {
-  return nts::False;
-}
+nts::Tristate FalseComponent::compute(std::size_t) { return nts::False; }
 
 ClockComponent::ClockComponent(const std::string &name)
     : InputComponent(name) {}
@@ -51,4 +45,4 @@ void ClockComponent::simulate(std::size_t) {
   else if (_value == nts::False)
     _value = nts::True;
 }
-}
+} // namespace nts

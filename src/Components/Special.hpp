@@ -38,4 +38,4 @@ public:
   ClockComponent(const std::string &name);
   void simulate(std::size_t tick) override;
 };
-}
+} // namespace nts

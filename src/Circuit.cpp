@@ -2,10 +2,11 @@
 #include <iostream>
 
 #include "Circuit.hpp"
-#include "IComponent.hpp"
 #include "Components/4081.hpp"
+#include "Components/Elementary.hpp"
 #include "Components/Gates.hpp"
 #include "Components/Special.hpp"
+#include "IComponent.hpp"
 
 namespace nts {
 Circuit::Circuit() : _tick(0) {}
@@ -88,7 +89,16 @@ Circuit::createComponent(const std::string &type, const std::string &name) {
     return std::make_unique<FalseComponent>(name);
   if (type == "clock")
     return std::make_unique<ClockComponent>(name);
-  
+
+  if (type == "and")
+    return std::make_unique<And>(name);
+  if (type == "or")
+    return std::make_unique<Or>(name);
+  if (type == "xor")
+    return std::make_unique<Xor>(name);
+  if (type == "not")
+    return std::make_unique<Not>(name);
+
   if (type == "4081")
     return std::make_unique<C4081>(name);
   if (type == "4071")
@@ -104,4 +114,4 @@ Circuit::createComponent(const std::string &type, const std::string &name) {
 
   throw std::runtime_error("Unknown component type: " + type);
 }
-}
+} // namespace nts

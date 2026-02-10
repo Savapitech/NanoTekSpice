@@ -8,4 +8,4 @@ class Parser {
 public:
   static void loadFile(const std::string &filename, Circuit &circuit);
 };
-}
+} // namespace nts
