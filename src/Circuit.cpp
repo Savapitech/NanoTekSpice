@@ -32,8 +32,12 @@ nts::IComponent *Circuit::getComponent(const std::string &name) {
 void Circuit::simulate() {
   _tick++;
 
+  for (auto &in : _inputs)
+    in->simulate(_tick);
+
   for (auto &comp : _components)
-    comp->simulate(_tick);
+    if (std::find(_inputs.begin(), _inputs.end(), comp.get()) == _inputs.end())
+      comp->simulate(_tick);
 }
 
 void Circuit::display() {
