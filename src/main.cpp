@@ -39,7 +39,6 @@ int main(int ac, char **av) {
       }
       std::cout << "> ";
     }
-    std::cout << "exit\n";
   } catch (const std::exception &e) {
     return std::cerr << e.what() << std::endl, FAILURE;
   }
