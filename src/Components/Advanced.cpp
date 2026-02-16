@@ -2,6 +2,7 @@
 #include "IComponent.hpp"
 #include "Advanced.hpp"
 #include "Logic.hpp"
+#include <cstddef>
 
 // 4008
 
@@ -38,5 +39,27 @@ nts::Tristate C4008::compute(std::size_t pin) {
   }
 
   return nts::Undefined;
+};
+
+std::size_t to_bin(nts::Tristate state) {
+  if (state == nts::True)
+    return 1;
+  else {
+    return 0;
+  }
+}
+
+//4514
+C4514::C4514(const std::string &name) : AComponent(name) {};
+nts::Tristate C4514::compute(std::size_t pin) {
+  if (getPinValue(23) == nts::True)
+    return nts::False;
+  std::size_t out = to_bin(getPinValue(2)) * 1 + to_bin(getPinValue(3)) * 2 + to_bin(getPinValue(21)) * 4 + to_bin(getPinValue(22)) * 8;
+  const std::size_t mapPins[16] = {
+    11, 9, 10, 8, 7, 6, 5, 4,18, 17, 20, 19, 14, 13, 16, 15
+  };
+  if (pin == mapPins[out])
+    return nts::True;
+  else return nts::False;
 };
 }
