@@ -35,6 +35,14 @@ std::unique_ptr<nts::IComponent> createComponent(const std::string &type,
   // Gates
   if (type == "4081")
     return std::make_unique<C4081>(name);
+  if (type == "4001")
+    return std::make_unique<C4001>(name);
+  if (type == "4011")
+    return std::make_unique<C4011>(name);
+  if (type == "4030")
+    return std::make_unique<C4030>(name);
+  if (type == "4071")
+    return std::make_unique<C4071>(name);
   throw std::runtime_error("Unknown component type: " + type);
 }
 
