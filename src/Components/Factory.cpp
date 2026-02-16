@@ -48,6 +48,8 @@ std::unique_ptr<nts::IComponent> createComponent(const std::string &type,
   // Advanced
   if (type == "4008")
     return std::make_unique<C4008>(name);
+  if (type == "4512")
+    return std::make_unique<C4512>(name);
   if (type == "4514")
     return std::make_unique<C4514>(name);
   throw std::runtime_error("Unknown component type: " + type);

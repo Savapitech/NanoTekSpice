@@ -49,15 +49,29 @@ std::size_t to_bin(nts::Tristate state) {
   }
 }
 
+//4512
+C4512::C4512(const std::string &name) : AComponent(name) {};
+nts::Tristate C4512::compute(std::size_t pin) {
+  if (pin == 14) {
+    if (getPinValue(10) == nts::True)
+      return nts::False;
+    if (getPinValue(15) == nts::True)
+      return nts::Undefined;
+    const std::size_t mapPins[8] = {1, 2, 3, 4, 5, 6, 7, 9};
+    std::size_t out = to_bin(getPinValue(11)) + to_bin(getPinValue(12)) * 2 + to_bin(getPinValue(13)) * 4;
+    return  getPinValue(mapPins[out]);
+  }
+  return nts::Undefined;  
+};
+
+
 //4514
 C4514::C4514(const std::string &name) : AComponent(name) {};
 nts::Tristate C4514::compute(std::size_t pin) {
   if (getPinValue(23) == nts::True)
     return nts::False;
   std::size_t out = to_bin(getPinValue(2)) * 1 + to_bin(getPinValue(3)) * 2 + to_bin(getPinValue(21)) * 4 + to_bin(getPinValue(22)) * 8;
-  const std::size_t mapPins[16] = {
-    11, 9, 10, 8, 7, 6, 5, 4,18, 17, 20, 19, 14, 13, 16, 15
-  };
+  const std::size_t mapPins[16] = {11, 9, 10, 8, 7, 6, 5, 4,18, 17, 20, 19, 14, 13, 16, 15};
   if (pin == mapPins[out])
     return nts::True;
   else return nts::False;
