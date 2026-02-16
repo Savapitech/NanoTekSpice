@@ -1,4 +1,5 @@
 #include "Gates.hpp"
+#include "AComponent.hpp"
 #include "IComponent.hpp"
 #include "Logic.hpp"
 
@@ -84,6 +85,8 @@ nts::Tristate C4071::compute(std::size_t pin) {
 }
 
 // 4008
+
+C4008::C4008(const std::string &name) : AComponent(name) {};
 nts::Tristate C4008::compute(std::size_t pin) {
   if (pin == 10)
     return simple_add(getPinValue(6), getPinValue(7), getPinValue(9)).first;
