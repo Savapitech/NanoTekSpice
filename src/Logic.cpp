@@ -1,4 +1,6 @@
 #include "Logic.hpp"
+#include "IComponent.hpp"
+#include <utility>
 
 nts::Tristate operator&&(const nts::Tristate &lhs, const nts::Tristate &rhs) {
   if (lhs == nts::False || rhs == nts::False)
@@ -28,4 +30,11 @@ nts::Tristate operator!(const nts::Tristate &rhs) {
   if (rhs == nts::False)
     return nts::True;
   return nts::Undefined;
+}
+std::pair<nts::Tristate, nts::Tristate> simple_add(const nts::Tristate &lhs, const nts::Tristate &rhs, const nts::Tristate &cin) {
+  nts::Tristate lhsxorrhs = !(lhs || rhs);
+  nts::Tristate lhsandrhs = lhs && rhs;
+  nts::Tristate res = !(lhsxorrhs || cin);
+  nts::Tristate carry =  lhsandrhs || (lhsxorrhs && cin);
+  return std::make_pair(res, carry);
 }
