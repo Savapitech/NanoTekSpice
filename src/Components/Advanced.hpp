@@ -11,6 +11,7 @@ public:
   nts::Tristate compute(std::size_t pin) override;
 };
 
+//4013
 class C4013 : public AComponent {
   private:
     class ffdata {
@@ -37,9 +38,21 @@ class C4013 : public AComponent {
   public:
     C4013(const std::string &name);
     nts::Tristate compute(std::size_t pin) override;
-    nts::Tristate flip_flop(ffdata &ff, nts::Tristate clk, nts::Tristate reset, nts::Tristate data, nts::Tristate set);
- 
+    nts::Tristate flip_flop(ffdata &ff, nts::Tristate clk, nts::Tristate reset, nts::Tristate data, nts::Tristate set); 
 };
+
+//4094
+
+class C4094 : public AComponent {
+  private:
+    nts::Tristate _stage[8];
+    nts::Tristate _output[8];
+    nts::Tristate _lastClk;
+  public:
+    C4094(const std::string &name);
+    nts::Tristate compute(std::size_t pin) override; 
+};
+
 
 class C4512 : public AComponent {
   public:

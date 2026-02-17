@@ -3,6 +3,8 @@
 #include "IComponent.hpp"
 #include "Logic.hpp"
 #include <cstddef>
+#include <algorithm>
+#include <iterator>
 
 // 4008
 
@@ -75,6 +77,48 @@ nts::Tristate C4013::compute(std::size_t pin) {
     return !flip_flop(ff2, getPinValue(11), getPinValue(10), getPinValue(9), getPinValue(8));
   return nts::Undefined;
 }
+
+C4094::C4094(const std::string &name) : AComponent(name) {
+  _lastClk = nts::False;
+  for (int i = 0; i < 8; i++) {
+    _output[i] = nts::False;
+    _stage[i] = nts::False;
+  }
+};
+nts::Tristate C4094::compute(std::size_t pin) {
+  const std::size_t mapPins[8] = {4, 5, 6, 7, 14, 13, 12, 11};
+  auto q_pin = std::find(std::begin(mapPins), std::end(mapPins), pin);
+
+  if (_lastClk == nts::False && getPinValue(3)   == nts::True) {
+    for (int i = 7; i > 0; i--)
+      _stage[i] = _stage[i-1];
+    _stage[0] = getPinValue(2);
+
+    if (getPinValue(1) == nts::True) {
+      for (int i = 0; i < 8; i++)
+        _output[i] = _stage[i];
+    }
+  }
+
+  _lastClk = getPinValue(3);
+
+  if (q_pin != std::end(mapPins)) {
+    std::size_t index = std::distance(std::begin(mapPins), q_pin);
+    if (getPinValue(15) == nts::True)
+      return _output[index];
+    else
+      return nts::Undefined;
+  }
+
+  if (pin == 9)
+    return _stage[7];
+  if (pin == 10)
+    return !_stage[7];
+
+  return nts::Undefined;
+};
+
+
 
 // 4512
 C4512::C4512(const std::string &name) : AComponent(name) {};
