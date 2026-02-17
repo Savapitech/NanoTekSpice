@@ -50,6 +50,8 @@ std::unique_ptr<nts::IComponent> createComponent(const std::string &type,
     return std::make_unique<C4008>(name);
   if (type == "4013")
     return std::make_unique<C4013>(name);
+  if (type == "4040")
+    return std::make_unique<C4040>(name);
   if (type == "4094")
     return std::make_unique<C4094>(name);
   if (type == "4512")

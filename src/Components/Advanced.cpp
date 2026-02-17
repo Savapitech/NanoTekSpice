@@ -78,6 +78,31 @@ nts::Tristate C4013::compute(std::size_t pin) {
   return nts::Undefined;
 }
 
+
+//C4040
+
+C4040::C4040(const std::string &name) : AComponent(name) {
+  _lastClk = nts::False;
+  _val = 0;
+}
+
+nts::Tristate C4040::compute(std::size_t pin) {
+  const std::size_t mapPins[12] = {9, 7, 6, 5, 3, 2, 4, 13, 12, 14, 15, 1};
+  if (getlastClk() == nts::False && getPinValue(10))
+    setVal((getVal() + 1) % 4096);
+  if (getPinValue(11) == nts::True)
+    setVal(0);
+  setlastClk(getPinValue(10));
+  auto find = std::find(std::begin(mapPins), std::end(mapPins), pin);
+  if (find == std::end(mapPins))
+    return nts::Undefined;
+  auto index = std::distance(std::begin(mapPins), find);
+  return ((getVal() >> index) & 1) ? nts::True : nts::False;
+}
+
+
+//C4094
+
 C4094::C4094(const std::string &name) : AComponent(name) {
   _lastClk = nts::False;
   for (int i = 0; i < 8; i++) {
