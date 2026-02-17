@@ -2,9 +2,9 @@
 // #include <functional>
 // #include <utility>
 
+#include "Components/Advanced.hpp"
 #include "Components/Elementary.hpp"
 #include "Components/Gates.hpp"
-#include "Components/Advanced.hpp"
 #include "Factory.hpp"
 #include "IComponent.hpp"
 
@@ -48,6 +48,8 @@ std::unique_ptr<nts::IComponent> createComponent(const std::string &type,
   // Advanced
   if (type == "4008")
     return std::make_unique<C4008>(name);
+  if (type == "4013")
+    return std::make_unique<C4013>(name);
   if (type == "4512")
     return std::make_unique<C4512>(name);
   if (type == "4514")
