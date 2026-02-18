@@ -3,6 +3,7 @@
 #include "AComponent.hpp"
 #include "IComponent.hpp"
 #include <cstddef>
+#include <cstdint>
 #include <iterator>
 
 namespace nts {
@@ -114,4 +115,34 @@ class C4514 : public AComponent {
     C4514(const std::string &name);
     nts::Tristate compute(std::size_t pin) override;
 };
-}
+
+
+class C2716 : public AComponent {
+  private:
+    std::uint8_t _mem[2048] = {};
+  public:
+    C2716(const std::string &name);
+    nts::Tristate compute(std::size_t pin) override; 
+    std::uint8_t getmem(std::size_t i) const {
+      return _mem[i];
+    }
+    void setmem(std::uint8_t val, std::size_t i) {
+      _mem[i] = val;
+    }
+};
+
+
+class C4801 : public AComponent {
+  private:
+    std::uint8_t _mem[1024] = {};
+  public:
+    C4801(const std::string &name);
+    nts::Tristate compute(std::size_t pin) override; 
+    std::uint8_t getmem(std::size_t i) const {
+      return _mem[i];
+    }
+    void setmem(std::uint8_t val, std::size_t i) {
+      _mem[i] = val;
+    }
+};
+} //namespace 

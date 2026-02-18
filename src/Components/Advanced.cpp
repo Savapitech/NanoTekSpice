@@ -4,7 +4,9 @@
 #include "Logic.hpp"
 #include <cstddef>
 #include <algorithm>
+#include <cstdint>
 #include <iterator>
+#include <string>
 
 // 4008
 
@@ -200,4 +202,58 @@ nts::Tristate C4514::compute(std::size_t pin) {
   else
     return nts::False;
 };
+
+C4801::C4801(const std::string &name) : AComponent(name) {};
+nts::Tristate C4801::compute(std::size_t pin) {
+  std::size_t mapPins[8] = {9, 10, 11, 13, 14, 15, 16, 17};
+  std::size_t mapAddress[10] = {8, 7, 6, 5, 4, 3, 2, 1, 23, 22};
+  std::size_t memadress = 0;
+  for (int i = 0; i < 10; i++) {
+    memadress += ((getPinValue(mapAddress[i]) == nts::True)? 1 : 0) * (1 << i);
+  }
+
+  //write
+  if (getPinValue(18) == nts::True && getPinValue(21) == nts::True) {
+    std::uint8_t temp = 0;
+    for (int i = 0; i < 8; i++) {
+      if (getPinValue(mapPins[i]) == nts::True) {
+        temp |= 1 << i;
+      }
+    }
+    setmem(temp, memadress);
+  }
+
+  auto find = std::find(std::begin(mapPins), std::end(mapPins), pin);
+  if (find == std::end(mapPins))
+    return nts::Undefined;
+  auto index = std::distance(std::begin(mapPins), find); 
+
+  //read
+  if (getPinValue(18) == nts::True && getPinValue(20) == nts::True) {
+    return ((getmem(memadress) >> index) & 1) ? nts::True : nts::False;
+  }
+  return nts::Undefined;
+}
+
+C2716::C2716(const std::string &name) : AComponent(name) {};
+nts::Tristate C2716::compute(std::size_t pin) {
+  std::size_t mapPins[8] = {9, 10, 11, 13, 14, 15, 16, 17};
+  std::size_t mapAddress[11] = {8, 7, 6, 5, 4, 3, 2, 1, 23, 22, 19};
+  std::size_t memadress = 0;
+  for (int i = 0; i < 11; i++) {
+    memadress += ((getPinValue(mapAddress[i]) == nts::True)? 1 : 0) * (1 << i);
+  }
+
+  auto find = std::find(std::begin(mapPins), std::end(mapPins), pin);
+  if (find == std::end(mapPins))
+    return nts::Undefined;
+  auto index = std::distance(std::begin(mapPins), find); 
+
+  if (getPinValue(18) == nts::True && getPinValue(20) == nts::True) {
+    return ((getmem(memadress) >> index) & 1) ? nts::True : nts::False;
+  }
+  return nts::Undefined;
+}
+
+
 } // namespace nts
