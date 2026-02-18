@@ -42,6 +42,31 @@ class C4013 : public AComponent {
     nts::Tristate flip_flop(ffdata &ff, nts::Tristate clk, nts::Tristate reset, nts::Tristate data, nts::Tristate set); 
 };
 
+//4017
+
+class C4017 : public AComponent {
+  private:
+    nts::Tristate _lastClk;
+    std::size_t _val;
+  public:
+    C4017(const std::string &name);
+    nts::Tristate compute(std::size_t pin) override;
+    std::size_t getVal() const {
+      return _val;
+    }
+    nts::Tristate getlastClk() const {
+      return _lastClk;
+    }
+    void setVal(std::size_t val) {
+      _val = val;
+    }
+    void setlastClk(nts::Tristate val) {
+      _lastClk = val;
+    }
+};
+
+
+
 //4040
 class C4040 : public AComponent {
   private:
