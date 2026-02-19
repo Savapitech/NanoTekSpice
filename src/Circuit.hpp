@@ -27,5 +27,6 @@ public:
   void simulate();
   void display();
   void setInputValue(const std::string &name, const std::string &value);
+  void setTick(size_t tick) { _tick = tick; };
 };
 } // namespace nts

@@ -17,6 +17,8 @@ int main(int ac, char **av) {
 
     std::string command;
     std::cout << "> ";
+    circuit.simulate();
+    circuit.setTick(0);
     while (std::getline(std::cin, command)) {
       if (command == "exit")
         break;
