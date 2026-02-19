@@ -1,5 +1,6 @@
 #include "Special.hpp"
 #include "AComponent.hpp"
+#include "Logic.hpp"
 
 namespace nts {
 // Input
@@ -48,12 +49,10 @@ nts::Tristate FalseComponent::compute(std::size_t) { return nts::False; }
 ClockComponent::ClockComponent(const std::string name) : InputComponent(name) {}
 
 void ClockComponent::simulate(std::size_t) {
-  if (_nextValue != nts::Undefined) {
+  if (_valueChanged) {
     _value = _nextValue;
-    _nextValue = nts::Undefined;
-  } else if (_value == nts::True)
-    _value = nts::False;
-  else if (_value == nts::False)
-    _value = nts::True;
+    _valueChanged = false;
+  } else
+    _value = !_value;
 }
 } // namespace nts
