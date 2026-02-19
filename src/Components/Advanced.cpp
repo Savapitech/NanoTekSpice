@@ -124,7 +124,7 @@ nts::Tristate C4040::compute(std::size_t pin) {
   if (find == std::end(mapPins))
     return nts::Undefined;
   auto index = std::distance(std::begin(mapPins), find);
-  return ((getVal() >> index) & 1) ? nts::True : nts::False;
+  return ((getVal() >> index) & 1) ? nts::False : nts::True;
 }
 
 
