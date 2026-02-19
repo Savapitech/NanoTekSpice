@@ -88,7 +88,7 @@ C4017::C4017(const std::string &name) : AComponent(name) {
 }
 
 nts::Tristate C4017::compute(std::size_t pin) {
-  const std::size_t mapPins[10] = {3, 2, 4, 7, 10, 5, 6, 9, 11, 12};
+  const std::size_t mapPins[10] = {3, 2, 4, 7, 10, 1, 5, 6, 9, 11};
   if (_lastClk == nts::False && getPinValue(14) == nts::True) {
     setVal((getVal() + 1) % 10);
   }
@@ -96,6 +96,10 @@ nts::Tristate C4017::compute(std::size_t pin) {
     setVal(0);
 
   setlastClk(getPinValue(14));
+
+  if (pin == 12)
+    return (getVal() < 5) ? nts::True : nts::False;
+
   auto find = std::find(std::begin(mapPins), std::end(mapPins), pin);
   if (find == std::end(mapPins))
     return nts::Undefined;
