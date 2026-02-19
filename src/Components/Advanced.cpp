@@ -9,7 +9,6 @@
 #include <string>
 
 // 4008
-
 namespace nts {
 C4008::C4008(const std::string &name) : AComponent(name) {};
 nts::Tristate C4008::compute(std::size_t pin) {

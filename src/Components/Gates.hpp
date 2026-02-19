@@ -37,4 +37,11 @@ public:
   C4071(const std::string &name);
   nts::Tristate compute(std::size_t pin) override;
 };
+
+// 4069
+class C4069 : public AComponent {
+public:
+  C4069(const std::string &name);
+  nts::Tristate compute(std::size_t pin) override;
+};
 } // namespace nts
