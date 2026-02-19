@@ -136,6 +136,7 @@ nts::Tristate C4040::compute(std::size_t pin) {
 
 C4094::C4094(const std::string &name) : AComponent(name) {
   _lastClk = nts::False;
+  _lastChange = nts::False;
   for (int i = 0; i < 8; i++) {
     _output[i] = nts::False;
     _stage[i] = nts::False;
@@ -146,6 +147,7 @@ nts::Tristate C4094::compute(std::size_t pin) {
   auto q_pin = std::find(std::begin(mapPins), std::end(mapPins), pin);
 
   if (_lastClk == nts::False && getPinValue(3)   == nts::True) {
+    _lastChange = _stage[7];
     for (int i = 7; i > 0; i--)
       _stage[i] = _stage[i-1];
     _stage[0] = getPinValue(2);
@@ -169,7 +171,7 @@ nts::Tristate C4094::compute(std::size_t pin) {
   if (pin == 9)
     return _stage[7];
   if (pin == 10)
-    return !_stage[7];
+    return _lastChange;
 
   return nts::Undefined;
 };

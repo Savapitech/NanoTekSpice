@@ -98,6 +98,7 @@ class C4094 : public AComponent {
     nts::Tristate _stage[8];
     nts::Tristate _output[8];
     nts::Tristate _lastClk;
+    nts::Tristate _lastChange;
   public:
     C4094(const std::string &name);
     nts::Tristate compute(std::size_t pin) override; 
