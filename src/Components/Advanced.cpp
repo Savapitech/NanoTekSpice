@@ -115,7 +115,7 @@ C4040::C4040(const std::string &name) : AComponent(name) {
 
 nts::Tristate C4040::compute(std::size_t pin) {
   const std::size_t mapPins[12] = {9, 7, 6, 5, 3, 2, 4, 13, 12, 14, 15, 1};
-  if (getlastClk() == nts::False && getPinValue(10))
+  if (getlastClk() == nts::True && getPinValue(10) == nts::False)
     setVal((getVal() + 1) % 4096);
   if (getPinValue(11) == nts::True)
     setVal(0);
