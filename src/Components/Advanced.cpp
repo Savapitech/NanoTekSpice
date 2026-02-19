@@ -2,8 +2,8 @@
 #include "AComponent.hpp"
 #include "IComponent.hpp"
 #include "Logic.hpp"
-#include <cstddef>
 #include <algorithm>
+#include <cstddef>
 #include <cstdint>
 #include <iterator>
 #include <string>
@@ -56,7 +56,9 @@ std::size_t to_bin(nts::Tristate state) {
 // 4013
 C4013::C4013(const std::string &name) : AComponent(name) {};
 
-nts::Tristate C4013::flip_flop(ffdata &ff, nts::Tristate clk, nts::Tristate reset, nts::Tristate data, nts::Tristate set) {
+nts::Tristate C4013::flip_flop(ffdata &ff, nts::Tristate clk,
+                               nts::Tristate reset, nts::Tristate data,
+                               nts::Tristate set) {
   if (ff.getlastClk() == nts::True && clk == nts::False) {
     ff.setData(data);
   }
@@ -70,17 +72,21 @@ nts::Tristate C4013::flip_flop(ffdata &ff, nts::Tristate clk, nts::Tristate rese
 
 nts::Tristate C4013::compute(std::size_t pin) {
   if (pin == 1)
-    return flip_flop(ff1, getPinValue(3), getPinValue(4), getPinValue(5), getPinValue(6));
+    return flip_flop(ff1, getPinValue(3), getPinValue(4), getPinValue(5),
+                     getPinValue(6));
   if (pin == 2)
-    return !flip_flop(ff1, getPinValue(3), getPinValue(4), getPinValue(5), getPinValue(6));
+    return !flip_flop(ff1, getPinValue(3), getPinValue(4), getPinValue(5),
+                      getPinValue(6));
   if (pin == 13)
-    return flip_flop(ff2, getPinValue(11), getPinValue(10), getPinValue(9), getPinValue(8));
+    return flip_flop(ff2, getPinValue(11), getPinValue(10), getPinValue(9),
+                     getPinValue(8));
   if (pin == 12)
-    return !flip_flop(ff2, getPinValue(11), getPinValue(10), getPinValue(9), getPinValue(8));
+    return !flip_flop(ff2, getPinValue(11), getPinValue(10), getPinValue(9),
+                      getPinValue(8));
   return nts::Undefined;
 }
 
-//C4017
+// C4017
 
 C4017::C4017(const std::string &name) : AComponent(name) {
   _lastClk = nts::False;
@@ -107,10 +113,7 @@ nts::Tristate C4017::compute(std::size_t pin) {
   return (getVal() == static_cast<std::size_t>(index)) ? nts::True : nts::False;
 }
 
-
-
-
-//C4040
+// C4040
 
 C4040::C4040(const std::string &name) : AComponent(name) {
   _lastClk = nts::False;
@@ -131,8 +134,7 @@ nts::Tristate C4040::compute(std::size_t pin) {
   return ((getVal() >> index) & 1) ? nts::True : nts::False;
 }
 
-
-//C4094
+// C4094
 
 C4094::C4094(const std::string &name) : AComponent(name) {
   _lastClk = nts::False;
@@ -146,10 +148,10 @@ nts::Tristate C4094::compute(std::size_t pin) {
   const std::size_t mapPins[8] = {4, 5, 6, 7, 14, 13, 12, 11};
   auto q_pin = std::find(std::begin(mapPins), std::end(mapPins), pin);
 
-  if (_lastClk == nts::False && getPinValue(3)   == nts::True) {
+  if (_lastClk == nts::False && getPinValue(3) == nts::True) {
     _lastChange = _stage[7];
     for (int i = 7; i > 0; i--)
-      _stage[i] = _stage[i-1];
+      _stage[i] = _stage[i - 1];
     _stage[0] = getPinValue(2);
 
     if (getPinValue(1) == nts::True) {
@@ -175,8 +177,6 @@ nts::Tristate C4094::compute(std::size_t pin) {
 
   return nts::Undefined;
 };
-
-
 
 // 4512
 C4512::C4512(const std::string &name) : AComponent(name) {};
@@ -215,10 +215,10 @@ nts::Tristate C4801::compute(std::size_t pin) {
   std::size_t mapAddress[10] = {8, 7, 6, 5, 4, 3, 2, 1, 23, 22};
   std::size_t memadress = 0;
   for (int i = 0; i < 10; i++) {
-    memadress += ((getPinValue(mapAddress[i]) == nts::True)? 1 : 0) * (1 << i);
+    memadress += ((getPinValue(mapAddress[i]) == nts::True) ? 1 : 0) * (1 << i);
   }
 
-  //write
+  // write
   if (getPinValue(18) == nts::True && getPinValue(21) == nts::True) {
     std::uint8_t temp = 0;
     for (int i = 0; i < 8; i++) {
@@ -232,9 +232,9 @@ nts::Tristate C4801::compute(std::size_t pin) {
   auto find = std::find(std::begin(mapPins), std::end(mapPins), pin);
   if (find == std::end(mapPins))
     return nts::Undefined;
-  auto index = std::distance(std::begin(mapPins), find); 
+  auto index = std::distance(std::begin(mapPins), find);
 
-  //read
+  // read
   if (getPinValue(18) == nts::True && getPinValue(20) == nts::True) {
     return ((getmem(memadress) >> index) & 1) ? nts::True : nts::False;
   }
@@ -247,19 +247,18 @@ nts::Tristate C2716::compute(std::size_t pin) {
   std::size_t mapAddress[11] = {8, 7, 6, 5, 4, 3, 2, 1, 23, 22, 19};
   std::size_t memadress = 0;
   for (int i = 0; i < 11; i++) {
-    memadress += ((getPinValue(mapAddress[i]) == nts::True)? 1 : 0) * (1 << i);
+    memadress += ((getPinValue(mapAddress[i]) == nts::True) ? 1 : 0) * (1 << i);
   }
 
   auto find = std::find(std::begin(mapPins), std::end(mapPins), pin);
   if (find == std::end(mapPins))
     return nts::Undefined;
-  auto index = std::distance(std::begin(mapPins), find); 
+  auto index = std::distance(std::begin(mapPins), find);
 
   if (getPinValue(18) == nts::True && getPinValue(20) == nts::True) {
     return ((getmem(memadress) >> index) & 1) ? nts::True : nts::False;
   }
   return nts::Undefined;
 }
-
 
 } // namespace nts
