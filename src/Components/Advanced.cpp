@@ -70,18 +70,17 @@ nts::Tristate C4013::flip_flop(ffdata &ff, nts::Tristate clk,
 }
 
 nts::Tristate C4013::compute(std::size_t pin) {
-  if (pin == 1)
-    return flip_flop(ff1, getPinValue(3), getPinValue(4), getPinValue(5),
+  nts::Tristate res;
+  if (pin == 1 || pin == 2) {
+    res = flip_flop(ff1, getPinValue(3), getPinValue(4), getPinValue(5),
                      getPinValue(6));
-  if (pin == 2)
-    return !flip_flop(ff1, getPinValue(3), getPinValue(4), getPinValue(5),
-                      getPinValue(6));
-  if (pin == 13)
-    return flip_flop(ff2, getPinValue(11), getPinValue(10), getPinValue(9),
+    return (pin == 1) ? res : !res; 
+  }
+  if (pin == 13 || pin == 12) {
+    res = flip_flop(ff2, getPinValue(11), getPinValue(10), getPinValue(9),
                      getPinValue(8));
-  if (pin == 12)
-    return !flip_flop(ff2, getPinValue(11), getPinValue(10), getPinValue(9),
-                      getPinValue(8));
+    return (pin == 13) ? res : !res;
+  }
   return nts::Undefined;
 }
 
@@ -181,9 +180,9 @@ nts::Tristate C4094::compute(std::size_t pin) {
 C4512::C4512(const std::string &name) : AComponent(name) {};
 nts::Tristate C4512::compute(std::size_t pin) {
   if (pin == 14) {
-    if (getPinValue(10) == nts::True)
-      return nts::False;
     if (getPinValue(15) == nts::True)
+      return nts::False;
+    if (getPinValue(10) == nts::True)
       return nts::Undefined;
     const std::size_t mapPins[8] = {1, 2, 3, 4, 5, 6, 7, 9};
     std::size_t out = to_bin(getPinValue(11)) + to_bin(getPinValue(12)) * 2 +
@@ -218,7 +217,7 @@ nts::Tristate C4801::compute(std::size_t pin) {
   }
 
   // write
-  if (getPinValue(18) == nts::True && getPinValue(21) == nts::True) {
+  if (getPinValue(18) == nts::False && getPinValue(21) == nts::False) {
     std::uint8_t temp = 0;
     for (int i = 0; i < 8; i++) {
       if (getPinValue(mapPins[i]) == nts::True) {
@@ -234,7 +233,7 @@ nts::Tristate C4801::compute(std::size_t pin) {
   auto index = std::distance(std::begin(mapPins), find);
 
   // read
-  if (getPinValue(18) == nts::True && getPinValue(20) == nts::True) {
+  if (getPinValue(18) == nts::False && getPinValue(20) == nts::False) {
     return ((getmem(memadress) >> index) & 1) ? nts::True : nts::False;
   }
   return nts::Undefined;
@@ -254,7 +253,7 @@ nts::Tristate C2716::compute(std::size_t pin) {
     return nts::Undefined;
   auto index = std::distance(std::begin(mapPins), find);
 
-  if (getPinValue(18) == nts::True && getPinValue(20) == nts::True) {
+  if (getPinValue(18) == nts::False && getPinValue(20) == nts::False) {
     return ((getmem(memadress) >> index) & 1) ? nts::True : nts::False;
   }
   return nts::Undefined;
