@@ -57,14 +57,18 @@ C4013::C4013(const std::string &name) : AComponent(name) {};
 
 nts::Tristate C4013::flip_flop(ffdata &ff, nts::Tristate clk,
                                nts::Tristate reset, nts::Tristate data,
-                               nts::Tristate set) {
+                               nts::Tristate set) { 
+  if (reset == nts::True) {
+    ff.setData(nts::False);
+    return nts::False;
+  }
+  if (set == nts::True) {
+    ff.setData(nts::True);
+    return nts::True;
+  }
   if (ff.getlastClk() == nts::False && clk == nts::True) {
     ff.setData(data);
   }
-  if (reset == nts::True)
-    return nts::False;
-  if (set == nts::True)
-    return nts::True;
   ff.setlastClk(clk);
   return ff.getData();
 }
