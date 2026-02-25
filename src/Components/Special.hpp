@@ -1,5 +1,7 @@
 #pragma once
 
+#include <fstream>
+
 #include "AComponent.hpp"
 
 namespace nts {
@@ -51,5 +53,17 @@ class ClockComponent : public InputComponent {
 public:
   ClockComponent(const std::string name);
   void simulate(std::size_t tick) override;
+};
+
+// Logger
+class LoggerComponent : public AComponent {
+private:
+  nts::Tristate _lastClk;
+
+public:
+  LoggerComponent(const std::string &name);
+  ~LoggerComponent() = default;
+  void simulate(std::size_t tick) override;
+  nts::Tristate compute(std::size_t pin) override;
 };
 } // namespace nts

@@ -55,4 +55,31 @@ void ClockComponent::simulate(std::size_t) {
   } else
     _value = !_value;
 }
+
+// Logger
+LoggerComponent::LoggerComponent(const std::string &name)
+    : AComponent(name), _lastClk(nts::Undefined) {}
+
+nts::Tristate LoggerComponent::compute(std::size_t pin) {
+  (void)pin;
+  return nts::Undefined;
+}
+
+void LoggerComponent::simulate(std::size_t) {
+  nts::Tristate clk = getPinValue(9);
+  nts::Tristate inhibit = getPinValue(10);
+
+  if (_lastClk != nts::True && clk == nts::True && inhibit == nts::False) {
+    char byte = 0;
+    for (std::size_t i = 0; i < 8; i++) {
+      nts::Tristate bit = getPinValue(i + 1);
+      if (bit == nts::True)
+        byte |= (1 << i);
+    }
+    std::ofstream file("./log.bin", std::ios::binary | std::ios::app);
+    if (file.is_open())
+      file.write(&byte, 1);
+  }
+  _lastClk = clk;
+}
 } // namespace nts

@@ -22,6 +22,8 @@ std::unique_ptr<nts::IComponent> createComponent(const std::string &type,
     return std::make_unique<FalseComponent>(name);
   if (type == "clock")
     return std::make_unique<ClockComponent>(name);
+  if (type == "logger")
+    return std::make_unique<LoggerComponent>(name);
 
   // Elementary
   if (type == "and")
