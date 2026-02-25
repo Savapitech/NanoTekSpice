@@ -180,10 +180,10 @@ nts::Tristate C4094::compute(std::size_t pin) {
 C4512::C4512(const std::string &name) : AComponent(name) {};
 nts::Tristate C4512::compute(std::size_t pin) {
   if (pin == 14) {
-    if (getPinValue(15) == nts::True)
-      return nts::False;
     if (getPinValue(10) == nts::True)
-      return nts::Undefined;
+      return nts::False;
+    if (getPinValue(15) == nts::True)
+      return nts::Undefined; 
     const std::size_t mapPins[8] = {1, 2, 3, 4, 5, 6, 7, 9};
     std::size_t out = to_bin(getPinValue(11)) + to_bin(getPinValue(12)) * 2 +
                       to_bin(getPinValue(13)) * 4;
