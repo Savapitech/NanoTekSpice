@@ -53,7 +53,16 @@ std::size_t to_bin(nts::Tristate state) {
 }
 
 // 4013
-C4013::C4013(const std::string &name) : AComponent(name) {};
+C4013::C4013(const std::string &name) : AComponent(name) {
+  done_1 = nts::False;
+  done_2 = nts::False;
+}
+
+void C4013::simulate(const std::size_t tick) {
+  (void) tick;
+  done_1 = nts::False;
+  done_2 = nts::False;
+}
 
 nts::Tristate C4013::flip_flop(ffdata &ff, nts::Tristate clk,
                                nts::Tristate reset, nts::Tristate data,
@@ -76,13 +85,19 @@ nts::Tristate C4013::flip_flop(ffdata &ff, nts::Tristate clk,
 nts::Tristate C4013::compute(std::size_t pin) {
   nts::Tristate res;
   if (pin == 1 || pin == 2) {
-    res = flip_flop(ff1, getPinValue(3), getPinValue(4), getPinValue(5),
+    if (!done_1) {
+      res = flip_flop(ff1, getPinValue(3), getPinValue(4), getPinValue(5),
                     getPinValue(6));
+      done_1 = nts::True;
+    }
     return (pin == 1) ? res : !res;
   }
   if (pin == 13 || pin == 12) {
-    res = flip_flop(ff2, getPinValue(11), getPinValue(10), getPinValue(9),
+    if (!done_2) {
+      res = flip_flop(ff2, getPinValue(11), getPinValue(10), getPinValue(9),
                     getPinValue(8));
+      done_2 = nts::True;
+    }
     return (pin == 13) ? res : !res;
   }
   return nts::Undefined;
@@ -97,7 +112,7 @@ C4017::C4017(const std::string &name) : AComponent(name) {
 
 nts::Tristate C4017::compute(std::size_t pin) {
   const std::size_t mapPins[10] = {3, 2, 4, 7, 10, 1, 5, 6, 9, 11};
-  if (_lastClk == nts::True && getPinValue(14) == nts::False) {
+  if (_lastClk == nts::False && getPinValue(14) == nts::True) {
     setVal((getVal() + 1) % 10);
   }
   if (getPinValue(15) == nts::True)
@@ -186,7 +201,7 @@ nts::Tristate C4512::compute(std::size_t pin) {
   if (pin == 14) {
     if (getPinValue(10) == nts::True)
       return nts::False;
-    if (getPinValue(15) == nts::True)
+    if (getPinValue(15) == nts::False)
       return nts::Undefined;
     const std::size_t mapPins[8] = {1, 2, 3, 4, 5, 6, 7, 9};
     std::size_t out = to_bin(getPinValue(11)) + to_bin(getPinValue(12)) * 2 +
@@ -199,7 +214,7 @@ nts::Tristate C4512::compute(std::size_t pin) {
 // 4514
 C4514::C4514(const std::string &name) : AComponent(name) {};
 nts::Tristate C4514::compute(std::size_t pin) {
-  if (getPinValue(23) == nts::False)
+  if (getPinValue(23) == nts::True)
     return nts::Undefined;
   std::size_t out = to_bin(getPinValue(2)) * 1 + to_bin(getPinValue(3)) * 2 +
                     to_bin(getPinValue(21)) * 4 + to_bin(getPinValue(22)) * 8;

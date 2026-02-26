@@ -30,10 +30,13 @@ private:
   };
   ffdata ff1;
   ffdata ff2;
+  nts::Tristate done_1;
+  nts::Tristate done_2;
 
 public:
   C4013(const std::string &name);
   nts::Tristate compute(std::size_t pin) override;
+  void simulate(std::size_t pin) override;
   nts::Tristate flip_flop(ffdata &ff, nts::Tristate clk, nts::Tristate reset,
                           nts::Tristate data, nts::Tristate set);
 };
