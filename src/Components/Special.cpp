@@ -1,6 +1,7 @@
 #include "Special.hpp"
 #include "AComponent.hpp"
 #include "Logic.hpp"
+#include <cstdint>
 
 namespace nts {
 // Input
@@ -70,15 +71,17 @@ void LoggerComponent::simulate(std::size_t) {
   nts::Tristate inhibit = getPinValue(10);
 
   if (_lastClk != nts::True && clk == nts::True && inhibit == nts::False) {
-    char byte = 0;
+    uint8_t byte = 0;
     for (std::size_t i = 0; i < 8; i++) {
       nts::Tristate bit = getPinValue(i + 1);
       if (bit == nts::True)
         byte |= (1 << i);
     }
     std::ofstream file("./log.bin", std::ios::binary | std::ios::app);
-    if (file.is_open())
-      file.write(&byte, 1);
+    if (file.is_open()) {
+      file.write(reinterpret_cast<const char *>(&byte), 1);
+      file.flush();
+    }
   }
   _lastClk = clk;
 }
