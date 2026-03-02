@@ -1,7 +1,10 @@
 #include <utility>
 
+#include <iostream>
+
 #include "AComponent.hpp"
-#include "Circuit.hpp"
+#include "IComponent.hpp"
+#include "Parser.hpp"
 
 namespace nts {
 AComponent::AComponent(const std::string &name) : _name(name) {}
@@ -23,6 +26,7 @@ void nts::AComponent::setValue(nts::Tristate value) {
 }
 
 nts::Tristate AComponent::getPinValue(std::size_t pin) {
+  CLINK
   if (_links.find(pin) != _links.end())
     return _links[pin].first->compute(_links[pin].second);
   return nts::Undefined;

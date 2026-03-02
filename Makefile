@@ -41,7 +41,7 @@ $$(NAME_$(strip $1)): $$(OBJ_$(strip $1))
 endef
 
 $(eval $(call mk-profile, release, SRC, , $(BIN_NAME)))
-$(eval $(call mk-profile, debug, SRC, -D DEBUG_MODE -fanalyzer -g3, debug))
+$(eval $(call mk-profile, debug, SRC, -D DEBUG_MODE -lasan -fanalyzer -g3, debug))
 
 all: $(NAME_release)
 

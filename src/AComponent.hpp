@@ -1,5 +1,6 @@
 #pragma once
 
+#include <cstdint>
 #include <map>
 
 #include "IComponent.hpp"
@@ -9,6 +10,7 @@ class AComponent : public IComponent {
 private:
   const std::string _name;
   std::map<std::size_t, std::pair<nts::IComponent *, std::size_t>> _links;
+  std::uint32_t _i = 0;
 
 protected:
   AComponent(const std::string &name);
