@@ -202,13 +202,24 @@ nts::Tristate C4094::compute(std::size_t pin) {
 C4512::C4512(const std::string &name) : AComponent(name) {};
 nts::Tristate C4512::compute(std::size_t pin) {
   if (pin == 14) {
+    if (getPinValue(15) == nts::True)
+      return nts::Undefined;
+    
     if (getPinValue(10) == nts::True)
       return nts::False;
-    if (getPinValue(15) == nts::False)
+
+    if (getPinValue(11) == nts::Undefined || getPinValue(12) == nts::Undefined || getPinValue(13) == nts::Undefined)
       return nts::Undefined;
+
     const std::size_t mapPins[8] = {1, 2, 3, 4, 5, 6, 7, 9};
-    std::size_t out = to_bin(getPinValue(11)) + to_bin(getPinValue(12)) * 2 +
-                      to_bin(getPinValue(13)) * 4;
+    std::size_t out = 0;
+    if (getPinValue(11) == nts::True)
+      out += 1;
+    if (getPinValue(12) == nts::True)
+      out += 2;
+    if (getPinValue(13) == nts::True)
+      out += 4;
+
     return getPinValue(mapPins[out]);
   }
   return nts::Undefined;
