@@ -94,9 +94,18 @@ public:
 };
 
 class C4514 : public AComponent {
+private:
+  nts::Tristate _lastStrobe;
+  nts::Tristate _valA;
+  nts::Tristate _valB;
+  nts::Tristate _valC;
+  nts::Tristate _valD;
+
 public:
   C4514(const std::string &name);
   nts::Tristate compute(std::size_t pin) override;
+  nts::Tristate getlastStrobe() const { return _lastStrobe; }
+  void setlastStrobe(nts::Tristate val) { _lastStrobe = val; }
 };
 
 class C2716 : public AComponent {

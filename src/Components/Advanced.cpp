@@ -215,12 +215,33 @@ nts::Tristate C4512::compute(std::size_t pin) {
 };
 
 // 4514
-C4514::C4514(const std::string &name) : AComponent(name) {};
+C4514::C4514(const std::string &name)
+    : AComponent(name), _lastStrobe(nts::Undefined), _valA(nts::Undefined),
+      _valB(nts::Undefined), _valC(nts::Undefined), _valD(nts::Undefined) {};
+
 nts::Tristate C4514::compute(std::size_t pin) {
+  nts::Tristate strobe = getPinValue(1);
+
   if (getPinValue(23) == nts::True)
+    return nts::False;
+
+  if (getlastStrobe() == nts::True && strobe == nts::False) {
+    _valA = getPinValue(2);
+    _valB = getPinValue(3);
+    _valC = getPinValue(21);
+    _valD = getPinValue(22);
+  }
+  setlastStrobe(strobe);
+
+  if (strobe == nts::True)
+    return nts::False;
+
+  if (_valA == nts::Undefined && _valB == nts::Undefined &&
+      _valC == nts::Undefined && _valD == nts::Undefined)
     return nts::Undefined;
-  std::size_t out = to_bin(getPinValue(2)) * 1 + to_bin(getPinValue(3)) * 2 +
-                    to_bin(getPinValue(21)) * 4 + to_bin(getPinValue(22)) * 8;
+
+  std::size_t out = to_bin(_valA) * 1 + to_bin(_valB) * 2 + to_bin(_valC) * 4 +
+                    to_bin(_valD) * 8;
   const std::size_t mapPins[16] = {11, 9,  10, 8,  7,  6,  5,  4,
                                    18, 17, 20, 19, 14, 13, 16, 15};
   if (pin == mapPins[out])
@@ -234,7 +255,6 @@ nts::Tristate C4801::compute(std::size_t pin) {
   std::size_t mapPins[8] = {9, 10, 11, 13, 14, 15, 16, 17};
   std::size_t mapAddress[10] = {8, 7, 6, 5, 4, 3, 2, 1, 23, 22};
   std::size_t memadress = 0;
-
 
   for (int i = 0; i < 10; i++) {
     memadress += ((getPinValue(mapAddress[i]) == nts::True) ? 1 : 0) * (1 << i);
