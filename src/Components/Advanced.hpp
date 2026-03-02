@@ -2,9 +2,11 @@
 
 #include "AComponent.hpp"
 #include "IComponent.hpp"
+#include <array>
 #include <cstddef>
 #include <cstdint>
 #include <iterator>
+#include <vector>
 
 namespace nts {
 class C4008 : public AComponent {
@@ -99,7 +101,7 @@ public:
 
 class C2716 : public AComponent {
 private:
-  std::uint8_t _mem[2048] = {};
+  std::array<uint8_t, 2048> _mem{};
 
 public:
   C2716(const std::string &name);

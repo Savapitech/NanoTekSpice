@@ -5,8 +5,11 @@
 #include <algorithm>
 #include <cstddef>
 #include <cstdint>
+#include <fstream>
 #include <iterator>
+#include <stdexcept>
 #include <string>
+#include <vector>
 
 // 4008
 namespace nts {
@@ -59,7 +62,7 @@ C4013::C4013(const std::string &name) : AComponent(name) {
 }
 
 void C4013::simulate(const std::size_t tick) {
-  (void) tick;
+  (void)tick;
   done_1 = nts::False;
   done_2 = nts::False;
 }
@@ -87,7 +90,7 @@ nts::Tristate C4013::compute(std::size_t pin) {
   if (pin == 1 || pin == 2) {
     if (!done_1) {
       res = flip_flop(ff1, getPinValue(3), getPinValue(4), getPinValue(5),
-                    getPinValue(6));
+                      getPinValue(6));
       done_1 = nts::True;
     }
     return (pin == 1) ? res : !res;
@@ -95,7 +98,7 @@ nts::Tristate C4013::compute(std::size_t pin) {
   if (pin == 13 || pin == 12) {
     if (!done_2) {
       res = flip_flop(ff2, getPinValue(11), getPinValue(10), getPinValue(9),
-                    getPinValue(8));
+                      getPinValue(8));
       done_2 = nts::True;
     }
     return (pin == 13) ? res : !res;
@@ -231,25 +234,28 @@ nts::Tristate C4801::compute(std::size_t pin) {
   std::size_t mapPins[8] = {9, 10, 11, 13, 14, 15, 16, 17};
   std::size_t mapAddress[10] = {8, 7, 6, 5, 4, 3, 2, 1, 23, 22};
   std::size_t memadress = 0;
+
+
   for (int i = 0; i < 10; i++) {
     memadress += ((getPinValue(mapAddress[i]) == nts::True) ? 1 : 0) * (1 << i);
-  }
-
-  // write
-  if (getPinValue(18) == nts::False && getPinValue(21) == nts::False) {
-    std::uint8_t temp = 0;
-    for (int i = 0; i < 8; i++) {
-      if (getPinValue(mapPins[i]) == nts::True) {
-        temp |= 1 << i;
-      }
-    }
-    setmem(temp, memadress);
   }
 
   auto find = std::find(std::begin(mapPins), std::end(mapPins), pin);
   if (find == std::end(mapPins))
     return nts::Undefined;
   auto index = std::distance(std::begin(mapPins), find);
+
+  // write
+  if (getPinValue(18) == nts::False && getPinValue(21) == nts::False) {
+    std::uint8_t temp = 0;
+    for (int i = 0; i < 8; i++) {
+      if (getPinValue(mapPins[i]) == nts::True) {
+        temp |= (1 << i);
+      }
+    }
+    setmem(temp, memadress);
+    return nts::Undefined;
+  }
 
   // read
   if (getPinValue(18) == nts::False && getPinValue(20) == nts::False) {
@@ -258,7 +264,14 @@ nts::Tristate C4801::compute(std::size_t pin) {
   return nts::Undefined;
 }
 
-C2716::C2716(const std::string &name) : AComponent(name) {};
+C2716::C2716(const std::string &name) : AComponent(name) {
+  std::ifstream file("./rom.bin", std::ios::binary);
+
+  if (!file.is_open())
+    throw std::runtime_error("no rom.bin to read");
+  file.read((char *)_mem.data(), _mem.size());
+};
+
 nts::Tristate C2716::compute(std::size_t pin) {
   std::size_t mapPins[8] = {9, 10, 11, 13, 14, 15, 16, 17};
   std::size_t mapAddress[11] = {8, 7, 6, 5, 4, 3, 2, 1, 23, 22, 19};
