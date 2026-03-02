@@ -1,5 +1,6 @@
 #include "Special.hpp"
 #include "AComponent.hpp"
+#include "IComponent.hpp"
 #include "Logic.hpp"
 #include <cstdint>
 
@@ -74,6 +75,8 @@ void LoggerComponent::simulate(std::size_t) {
     uint8_t byte = 0;
     for (std::size_t i = 0; i < 8; i++) {
       nts::Tristate bit = getPinValue(i + 1);
+      if (bit == nts::Undefined)
+        return;
       if (bit == nts::True)
         byte |= (1 << i);
     }
