@@ -1,0 +1,24 @@
+.chipsets:
+input b0
+input b1
+input b2
+input b3
+input b4
+input b5
+input b6
+input b7
+input clk
+input inh
+logger log0
+
+.links:
+b0:1 log0:1
+b1:1 log0:2
+b2:1 log0:3
+b3:1 log0:4
+b4:1 log0:5
+b5:1 log0:6
+b6:1 log0:7
+b7:1 log0:8
+clk:1 log0:9
+inh:1 log0:10

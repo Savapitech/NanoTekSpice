@@ -42,8 +42,12 @@ endef
 
 $(eval $(call mk-profile, release, SRC, , $(BIN_NAME)))
 $(eval $(call mk-profile, debug, SRC, -D DEBUG_MODE -lasan -fanalyzer -g3, debug))
+$(eval $(call mk-profile, test, SRC, , test))
 
 all: $(NAME_release)
+
+tests: $(NAME_test)
+	@ bash tests/run_all.sh
 
 format:
 	@ find src/ -name "*.cpp" -type f -exec clang-format -i {} ";"
