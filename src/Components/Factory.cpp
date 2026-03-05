@@ -5,6 +5,7 @@
 #include "Components/Advanced.hpp"
 #include "Components/Elementary.hpp"
 #include "Components/Gates.hpp"
+#include "Error.hpp"
 #include "Factory.hpp"
 #include "IComponent.hpp"
 
@@ -94,6 +95,6 @@ std::unique_ptr<nts::IComponent> createComponent(const std::string &type,
   auto it = factories.find(type);
   if (it != factories.end())
     return it->second(name);
-  throw std::runtime_error("Unknown component type: " + type);
+  throw nts::UnknownComponentError("Unknown component type: " + type);
 }
 } // namespace nts

@@ -1,5 +1,6 @@
 #include "Advanced.hpp"
 #include "AComponent.hpp"
+#include "Error.hpp"
 #include "IComponent.hpp"
 #include "Logic.hpp"
 #include <algorithm>
@@ -7,7 +8,6 @@
 #include <cstdint>
 #include <fstream>
 #include <iterator>
-#include <stdexcept>
 #include <string>
 #include <vector>
 
@@ -299,7 +299,7 @@ C2716::C2716(const std::string &name) : AComponent(name) {
   std::ifstream file("./rom.bin", std::ios::binary);
 
   if (!file.is_open())
-    throw std::runtime_error("no rom.bin to read");
+    throw nts::FileError("no rom.bin to read");
   file.read((char *)_mem.data(), _mem.size());
 };
 

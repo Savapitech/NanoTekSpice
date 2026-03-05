@@ -2,9 +2,9 @@
 #include <fstream>
 #include <set>
 #include <sstream>
-#include <stdexcept>
 
 #include "Components/Factory.hpp"
+#include "Error.hpp"
 #include "Parser.hpp"
 
 enum { STEP_CHIPSETS = 1 << 0, STEP_LINKS = 1 << 1 };
@@ -21,8 +21,8 @@ static std::pair<std::string, std::size_t> parsePin(const std::string &s,
                                                     size_t lineNb) {
   size_t colon = s.find(':');
   if (colon == std::string::npos || colon == 0 || colon == s.size() - 1)
-    throw std::runtime_error("Line " + std::to_string(lineNb) +
-                             ": Invalid link format `" + s + "'.");
+    throw nts::ParseError("Line " + std::to_string(lineNb) +
+                          ": Invalid link format `" + s + "'.");
   std::string name = s.substr(0, colon);
   std::string pinStr = s.substr(colon + 1);
   std::size_t pin = 0;
@@ -32,12 +32,12 @@ static std::pair<std::string, std::size_t> parsePin(const std::string &s,
     if (pos != pinStr.size())
       throw std::invalid_argument("trailing chars");
   } catch (...) {
-    throw std::runtime_error("Line " + std::to_string(lineNb) +
-                             ": Invalid pin number `" + pinStr + "'.");
+    throw nts::PinError("Line " + std::to_string(lineNb) +
+                       ": Invalid pin number `" + pinStr + "'.");
   }
   if (pin == 0)
-    throw std::runtime_error("Line " + std::to_string(lineNb) +
-                             ": Pin number must be > 0.");
+    throw nts::PinError("Line " + std::to_string(lineNb) +
+                       ": Pin number must be > 0.");
   return {name, pin};
 }
 
@@ -45,7 +45,7 @@ namespace nts {
 void Parser::loadFile(const std::string &filename, Circuit &circuit) {
   std::ifstream file(filename);
   if (!file.is_open())
-    throw std::runtime_error("Cannot open file: " + filename);
+    throw nts::FileError("Cannot open file: " + filename);
 
   std::string line;
   uint8_t step = 0;
@@ -73,41 +73,41 @@ void Parser::loadFile(const std::string &filename, Circuit &circuit) {
     if (token == ".chipsets:") {
       std::string extra;
       if (ss >> extra)
-        throw std::runtime_error("Line " + std::to_string(lineNb) +
-                                 ": Unexpected token after `.chipsets:'.");
+        throw nts::ParseError("Line " + std::to_string(lineNb) +
+                              ": Unexpected token after `.chipsets:'.");
       step = STEP_CHIPSETS;
       continue;
     }
     if (token == ".links:") {
       std::string extra;
       if (ss >> extra)
-        throw std::runtime_error("Line " + std::to_string(lineNb) +
-                                 ": Unexpected token after `.links:'.");
+        throw nts::ParseError("Line " + std::to_string(lineNb) +
+                              ": Unexpected token after `.links:'.");
       if (!hasChipsets)
-        throw std::runtime_error("No chipsets in circuit.");
+        throw nts::CircuitError("No chipsets in circuit.");
       step = STEP_LINKS;
       continue;
     }
 
     if (!step)
-      throw std::runtime_error("Line " + std::to_string(lineNb) +
-                               ": Content outside of a valid section.");
+      throw nts::ParseError("Line " + std::to_string(lineNb) +
+                            ": Content outside of a valid section.");
 
     if (step & STEP_CHIPSETS) {
       std::string type = token;
       std::string name;
       ss >> name;
       if (name.empty())
-        throw std::runtime_error("Line " + std::to_string(lineNb) +
-                                 ": Missing component name for type `" + type +
-                                 "'.");
+        throw nts::ParseError("Line " + std::to_string(lineNb) +
+                              ": Missing component name for type `" + type +
+                              "'.");
       std::string extra;
       if (ss >> extra)
-        throw std::runtime_error("Line " + std::to_string(lineNb) +
-                                 ": Unexpected token `" + extra + "'.");
+        throw nts::ParseError("Line " + std::to_string(lineNb) +
+                              ": Unexpected token `" + extra + "'.");
       if (declaredNames.count(name))
-        throw std::runtime_error("Line " + std::to_string(lineNb) +
-                                 ": Duplicate component name `" + name + "'.");
+        throw nts::DuplicateComponentError("Line " + std::to_string(lineNb) +
+                                           ": Duplicate component name `" + name + "'.");
       declaredNames.insert(name);
       auto comp = nts::createComponent(type, name);
       circuit.addComponent(std::move(comp));
@@ -117,12 +117,12 @@ void Parser::loadFile(const std::string &filename, Circuit &circuit) {
       std::string p2;
       ss >> p2;
       if (p2.empty())
-        throw std::runtime_error("Line " + std::to_string(lineNb) +
-                                 ": Missing second link target.");
+        throw nts::ParseError("Line " + std::to_string(lineNb) +
+                              ": Missing second link target.");
       std::string extra;
       if (ss >> extra)
-        throw std::runtime_error("Line " + std::to_string(lineNb) +
-                                 ": Unexpected token `" + extra + "'.");
+        throw nts::ParseError("Line " + std::to_string(lineNb) +
+                              ": Unexpected token `" + extra + "'.");
 
       auto link1 = parsePin(p1, lineNb);
       auto link2 = parsePin(p2, lineNb);
@@ -136,6 +136,6 @@ void Parser::loadFile(const std::string &filename, Circuit &circuit) {
   }
 
   if (!hasChipsets)
-    throw std::runtime_error("No chipsets in circuit.");
+    throw nts::CircuitError("No chipsets in circuit.");
 }
 } // namespace nts

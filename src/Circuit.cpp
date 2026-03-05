@@ -1,9 +1,9 @@
 #include <algorithm>
 #include <iostream>
-#include <stdexcept>
 
 #include "Circuit.hpp"
 #include "Components/Special.hpp"
+#include "Error.hpp"
 #include "IComponent.hpp"
 
 namespace nts {
@@ -26,7 +26,7 @@ void Circuit::addComponent(std::unique_ptr<nts::IComponent> component) {
 nts::IComponent *Circuit::getComponent(const std::string &name) {
   if (_componentByName.find(name) != _componentByName.end())
     return _componentByName[name];
-  throw std::runtime_error("Unknown component");
+  throw nts::UnknownComponentError("Unknown component name '" + name + "'.");
 }
 
 void Circuit::simulate() {

@@ -3,6 +3,7 @@
 #include <iostream>
 
 #include "AComponent.hpp"
+#include "Error.hpp"
 #include "IComponent.hpp"
 #include "Parser.hpp"
 
@@ -21,8 +22,8 @@ void AComponent::setLink(std::size_t pin, nts::IComponent &other,
 }
 
 void nts::AComponent::setValue(nts::Tristate value) {
-  throw std::runtime_error(
-      "Cannot set value on a component that is not a input or a clock");
+  throw nts::ComponentError(
+      "Cannot set value on a component that is not an input or a clock");
 }
 
 nts::Tristate AComponent::getPinValue(std::size_t pin) {
