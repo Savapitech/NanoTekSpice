@@ -1,44 +1,49 @@
 #pragma once
 
 #include "AComponent.hpp"
+#include "Logic.hpp"
 
 namespace nts {
-// 4081
-class C4081 : public AComponent {
-public:
-  C4081(const std::string &name);
-  nts::Tristate compute(std::size_t pin) override;
+
+struct AndOp {
+  static Tristate apply(Tristate a, Tristate b) { return a && b; }
+};
+struct NandOp {
+  static Tristate apply(Tristate a, Tristate b) { return !(a && b); }
+};
+struct OrOp {
+  static Tristate apply(Tristate a, Tristate b) { return a || b; }
+};
+struct NorOp {
+  static Tristate apply(Tristate a, Tristate b) { return !(a || b); }
+};
+struct XorOp {
+  static Tristate apply(Tristate a, Tristate b) { return a ^ b; }
 };
 
-// 4001
-class C4001 : public AComponent {
+template <typename Op> class FourGateChip : public AComponent {
 public:
-  C4001(const std::string &name);
-  nts::Tristate compute(std::size_t pin) override;
+  FourGateChip(const std::string &name) : AComponent(name) {}
+  nts::Tristate compute(std::size_t pin) override {
+    if (pin == 3)
+      return Op::apply(getPinValue(1), getPinValue(2));
+    if (pin == 4)
+      return Op::apply(getPinValue(5), getPinValue(6));
+    if (pin == 10)
+      return Op::apply(getPinValue(8), getPinValue(9));
+    if (pin == 11)
+      return Op::apply(getPinValue(12), getPinValue(13));
+    return nts::Undefined;
+  }
 };
 
-// 4011
-class C4011 : public AComponent {
-public:
-  C4011(const std::string &name);
-  nts::Tristate compute(std::size_t pin) override;
-};
+using C4081 = FourGateChip<AndOp>;
+using C4001 = FourGateChip<NorOp>;
+using C4011 = FourGateChip<NandOp>;
+using C4030 = FourGateChip<XorOp>;
+using C4071 = FourGateChip<OrOp>;
 
-// 4030
-class C4030 : public AComponent {
-public:
-  C4030(const std::string &name);
-  nts::Tristate compute(std::size_t pin) override;
-};
-
-// 4071
-class C4071 : public AComponent {
-public:
-  C4071(const std::string &name);
-  nts::Tristate compute(std::size_t pin) override;
-};
-
-// 4069
+// 4069 (six inverters — different pin layout)
 class C4069 : public AComponent {
 public:
   C4069(const std::string &name);
