@@ -56,53 +56,45 @@ std::size_t to_bin(nts::Tristate state) {
 }
 
 // 4013
-C4013::C4013(const std::string &name) : AComponent(name) {
-  done_1 = nts::False;
-  done_2 = nts::False;
-}
+C4013::C4013(const std::string &name) : AComponent(name) {}
 
 void C4013::simulate(const std::size_t tick) {
   (void)tick;
-  done_1 = nts::False;
-  done_2 = nts::False;
+  auto clk1 = getPinValue(3), rst1 = getPinValue(4), dat1 = getPinValue(5),
+       set1 = getPinValue(6);
+  auto clk2 = getPinValue(11), rst2 = getPinValue(10), dat2 = getPinValue(9),
+       set2 = getPinValue(8);
+  flip_flop(ff1, clk1, rst1, dat1, set1);
+  flip_flop(ff2, clk2, rst2, dat2, set2);
 }
 
-nts::Tristate C4013::flip_flop(ffdata &ff, nts::Tristate clk,
-                               nts::Tristate reset, nts::Tristate data,
-                               nts::Tristate set) {
+void C4013::flip_flop(ffdata &ff, nts::Tristate clk, nts::Tristate reset,
+                      nts::Tristate data, nts::Tristate set) {
   if (reset == nts::True) {
     ff.setData(nts::False);
-    return nts::False;
+    ff.setlastClk(clk);
+    return;
   }
   if (set == nts::True) {
     ff.setData(nts::True);
-    return nts::True;
+    ff.setlastClk(clk);
+    return;
   }
   if (ff.getlastClk() == nts::False && clk == nts::True) {
     ff.setData(data);
   }
   ff.setlastClk(clk);
-  return ff.getData();
 }
 
 nts::Tristate C4013::compute(std::size_t pin) {
-  nts::Tristate res;
-  if (pin == 1 || pin == 2) {
-    if (!done_1) {
-      res = flip_flop(ff1, getPinValue(3), getPinValue(4), getPinValue(5),
-                      getPinValue(6));
-      done_1 = nts::True;
-    }
-    return (pin == 1) ? res : !res;
-  }
-  if (pin == 13 || pin == 12) {
-    if (!done_2) {
-      res = flip_flop(ff2, getPinValue(11), getPinValue(10), getPinValue(9),
-                      getPinValue(8));
-      done_2 = nts::True;
-    }
-    return (pin == 13) ? res : !res;
-  }
+  if (pin == 1)
+    return ff1.getData();
+  if (pin == 2)
+    return !ff1.getData();
+  if (pin == 13)
+    return ff2.getData();
+  if (pin == 12)
+    return !ff2.getData();
   return nts::Undefined;
 }
 
@@ -113,15 +105,21 @@ C4017::C4017(const std::string &name) : AComponent(name) {
   _val = 0;
 }
 
-nts::Tristate C4017::compute(std::size_t pin) {
-  const std::size_t mapPins[10] = {3, 2, 4, 7, 10, 1, 5, 6, 9, 11};
-  if (_lastClk == nts::False && getPinValue(14) == nts::True) {
+void C4017::simulate(std::size_t tick) {
+  (void)tick;
+  nts::Tristate cp0 = getPinValue(14);
+  nts::Tristate cp1 = getPinValue(13);
+  nts::Tristate effectiveClk = cp0 && !cp1;
+
+  if (_lastClk == nts::False && effectiveClk == nts::True)
     setVal((getVal() + 1) % 10);
-  }
   if (getPinValue(15) == nts::True)
     setVal(0);
+  setlastClk(effectiveClk);
+}
 
-  setlastClk(getPinValue(14));
+nts::Tristate C4017::compute(std::size_t pin) {
+  const std::size_t mapPins[10] = {3, 2, 4, 7, 10, 1, 5, 6, 9, 11};
 
   if (pin == 12)
     return (getVal() < 5) ? nts::True : nts::False;
@@ -140,13 +138,18 @@ C4040::C4040(const std::string &name) : AComponent(name) {
   _val = 0;
 }
 
-nts::Tristate C4040::compute(std::size_t pin) {
-  const std::size_t mapPins[12] = {9, 7, 6, 5, 3, 2, 4, 13, 12, 14, 15, 1};
-  if (getlastClk() == nts::True && getPinValue(10) == nts::False)
+void C4040::simulate(std::size_t tick) {
+  (void)tick;
+  nts::Tristate clk = getPinValue(10);
+  if (getlastClk() == nts::True && clk == nts::False)
     setVal((getVal() + 1) % 4096);
   if (getPinValue(11) == nts::True)
     setVal(0);
-  setlastClk(getPinValue(10));
+  setlastClk(clk);
+}
+
+nts::Tristate C4040::compute(std::size_t pin) {
+  const std::size_t mapPins[12] = {9, 7, 6, 5, 3, 2, 4, 13, 12, 14, 15, 1};
   auto find = std::find(std::begin(mapPins), std::end(mapPins), pin);
   if (find == std::end(mapPins))
     return nts::Undefined;
@@ -164,23 +167,26 @@ C4094::C4094(const std::string &name) : AComponent(name) {
     _stage[i] = nts::False;
   }
 };
-nts::Tristate C4094::compute(std::size_t pin) {
-  const std::size_t mapPins[8] = {4, 5, 6, 7, 14, 13, 12, 11};
-  auto q_pin = std::find(std::begin(mapPins), std::end(mapPins), pin);
 
-  if (_lastClk == nts::False && getPinValue(3) == nts::True) {
+void C4094::simulate(std::size_t tick) {
+  (void)tick;
+  nts::Tristate clk = getPinValue(3);
+  if (_lastClk == nts::False && clk == nts::True) {
     _lastChange = _stage[7];
     for (int i = 7; i > 0; i--)
       _stage[i] = _stage[i - 1];
     _stage[0] = getPinValue(2);
-
     if (getPinValue(1) == nts::True) {
       for (int i = 0; i < 8; i++)
         _output[i] = _stage[i];
     }
   }
+  _lastClk = clk;
+}
 
-  _lastClk = getPinValue(3);
+nts::Tristate C4094::compute(std::size_t pin) {
+  const std::size_t mapPins[8] = {4, 5, 6, 7, 14, 13, 12, 11};
+  auto q_pin = std::find(std::begin(mapPins), std::end(mapPins), pin);
 
   if (q_pin != std::end(mapPins)) {
     std::size_t index = std::distance(std::begin(mapPins), q_pin);
@@ -204,11 +210,12 @@ nts::Tristate C4512::compute(std::size_t pin) {
   if (pin == 14) {
     if (getPinValue(15) == nts::True)
       return nts::Undefined;
-    
+
     if (getPinValue(10) == nts::True)
       return nts::False;
 
-    if (getPinValue(11) == nts::Undefined || getPinValue(12) == nts::Undefined || getPinValue(13) == nts::Undefined)
+    if (getPinValue(11) == nts::Undefined ||
+        getPinValue(12) == nts::Undefined || getPinValue(13) == nts::Undefined)
       return nts::Undefined;
 
     const std::size_t mapPins[8] = {1, 2, 3, 4, 5, 6, 7, 9};
@@ -230,12 +237,9 @@ C4514::C4514(const std::string &name)
     : AComponent(name), _lastStrobe(nts::Undefined), _valA(nts::Undefined),
       _valB(nts::Undefined), _valC(nts::Undefined), _valD(nts::Undefined) {};
 
-nts::Tristate C4514::compute(std::size_t pin) {
+void C4514::simulate(std::size_t tick) {
+  (void)tick;
   nts::Tristate strobe = getPinValue(1);
-
-  if (getPinValue(23) == nts::True)
-    return nts::False;
-
   if (getlastStrobe() == nts::True && strobe == nts::False) {
     _valA = getPinValue(2);
     _valB = getPinValue(3);
@@ -243,7 +247,13 @@ nts::Tristate C4514::compute(std::size_t pin) {
     _valD = getPinValue(22);
   }
   setlastStrobe(strobe);
+}
 
+nts::Tristate C4514::compute(std::size_t pin) {
+  if (getPinValue(23) == nts::True)
+    return nts::False;
+
+  nts::Tristate strobe = getPinValue(1);
   if (strobe == nts::True)
     return nts::False;
 
@@ -262,6 +272,27 @@ nts::Tristate C4514::compute(std::size_t pin) {
 };
 
 C4801::C4801(const std::string &name) : AComponent(name) {};
+
+void C4801::simulate(std::size_t tick) {
+  (void)tick;
+  if (getPinValue(18) == nts::False && getPinValue(21) == nts::False) {
+    std::size_t mapPins[8] = {9, 10, 11, 13, 14, 15, 16, 17};
+    std::size_t mapAddress[10] = {8, 7, 6, 5, 4, 3, 2, 1, 23, 22};
+    std::size_t memadress = 0;
+    for (int i = 0; i < 10; i++) {
+      memadress +=
+          ((getPinValue(mapAddress[i]) == nts::True) ? 1 : 0) * (1 << i);
+    }
+    std::uint8_t temp = 0;
+    for (int i = 0; i < 8; i++) {
+      if (getPinValue(mapPins[i]) == nts::True) {
+        temp |= (1 << i);
+      }
+    }
+    setmem(temp, memadress);
+  }
+}
+
 nts::Tristate C4801::compute(std::size_t pin) {
   std::size_t mapPins[8] = {9, 10, 11, 13, 14, 15, 16, 17};
   std::size_t mapAddress[10] = {8, 7, 6, 5, 4, 3, 2, 1, 23, 22};
@@ -276,19 +307,6 @@ nts::Tristate C4801::compute(std::size_t pin) {
     return nts::Undefined;
   auto index = std::distance(std::begin(mapPins), find);
 
-  // write
-  if (getPinValue(18) == nts::False && getPinValue(21) == nts::False) {
-    std::uint8_t temp = 0;
-    for (int i = 0; i < 8; i++) {
-      if (getPinValue(mapPins[i]) == nts::True) {
-        temp |= (1 << i);
-      }
-    }
-    setmem(temp, memadress);
-    return nts::Undefined;
-  }
-
-  // read
   if (getPinValue(18) == nts::False && getPinValue(20) == nts::False) {
     return ((getmem(memadress) >> index) & 1) ? nts::True : nts::False;
   }

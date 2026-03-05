@@ -32,15 +32,13 @@ private:
   };
   ffdata ff1;
   ffdata ff2;
-  nts::Tristate done_1;
-  nts::Tristate done_2;
 
 public:
   C4013(const std::string &name);
   nts::Tristate compute(std::size_t pin) override;
-  void simulate(std::size_t pin) override;
-  nts::Tristate flip_flop(ffdata &ff, nts::Tristate clk, nts::Tristate reset,
-                          nts::Tristate data, nts::Tristate set);
+  void simulate(std::size_t tick) override;
+  void flip_flop(ffdata &ff, nts::Tristate clk, nts::Tristate reset,
+                 nts::Tristate data, nts::Tristate set);
 };
 
 // 4017
@@ -53,6 +51,7 @@ private:
 public:
   C4017(const std::string &name);
   nts::Tristate compute(std::size_t pin) override;
+  void simulate(std::size_t tick) override;
   std::size_t getVal() const { return _val; }
   nts::Tristate getlastClk() const { return _lastClk; }
   void setVal(std::size_t val) { _val = val; }
@@ -68,6 +67,7 @@ private:
 public:
   C4040(const std::string &name);
   nts::Tristate compute(std::size_t pin) override;
+  void simulate(std::size_t tick) override;
   std::size_t getVal() const { return _val; }
   nts::Tristate getlastClk() const { return _lastClk; }
   void setVal(std::size_t val) { _val = val; }
@@ -85,6 +85,7 @@ private:
 public:
   C4094(const std::string &name);
   nts::Tristate compute(std::size_t pin) override;
+  void simulate(std::size_t tick) override;
 };
 
 class C4512 : public AComponent {
@@ -104,6 +105,7 @@ private:
 public:
   C4514(const std::string &name);
   nts::Tristate compute(std::size_t pin) override;
+  void simulate(std::size_t tick) override;
   nts::Tristate getlastStrobe() const { return _lastStrobe; }
   void setlastStrobe(nts::Tristate val) { _lastStrobe = val; }
 };
@@ -126,6 +128,7 @@ private:
 public:
   C4801(const std::string &name);
   nts::Tristate compute(std::size_t pin) override;
+  void simulate(std::size_t tick) override;
   std::uint8_t getmem(std::size_t i) const { return _mem[i]; }
   void setmem(std::uint8_t val, std::size_t i) { _mem[i] = val; }
 };
