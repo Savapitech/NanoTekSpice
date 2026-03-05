@@ -36,8 +36,14 @@ void Circuit::simulate() {
     in->simulate(_tick);
 
   for (auto &comp : _components)
-    if (std::find(_inputs.begin(), _inputs.end(), comp.get()) == _inputs.end())
+    if (std::find(_inputs.begin(), _inputs.end(), comp.get()) ==
+            _inputs.end() &&
+        std::find(_outputs.begin(), _outputs.end(), comp.get()) ==
+            _outputs.end())
       comp->simulate(_tick);
+
+  for (auto &out : _outputs)
+    out->simulate(_tick);
 }
 
 void Circuit::display() {

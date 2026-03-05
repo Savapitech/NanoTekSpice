@@ -33,11 +33,11 @@ static std::pair<std::string, std::size_t> parsePin(const std::string &s,
       throw std::invalid_argument("trailing chars");
   } catch (...) {
     throw nts::PinError("Line " + std::to_string(lineNb) +
-                       ": Invalid pin number `" + pinStr + "'.");
+                        ": Invalid pin number `" + pinStr + "'.");
   }
   if (pin == 0)
     throw nts::PinError("Line " + std::to_string(lineNb) +
-                       ": Pin number must be > 0.");
+                        ": Pin number must be > 0.");
   return {name, pin};
 }
 
@@ -107,7 +107,8 @@ void Parser::loadFile(const std::string &filename, Circuit &circuit) {
                               ": Unexpected token `" + extra + "'.");
       if (declaredNames.count(name))
         throw nts::DuplicateComponentError("Line " + std::to_string(lineNb) +
-                                           ": Duplicate component name `" + name + "'.");
+                                           ": Duplicate component name `" +
+                                           name + "'.");
       declaredNames.insert(name);
       auto comp = nts::createComponent(type, name);
       circuit.addComponent(std::move(comp));

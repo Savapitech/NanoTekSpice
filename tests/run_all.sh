@@ -1,6 +1,4 @@
 #!/bin/bash
-# Comprehensive test script for NanoTekSpice
-# Tests all components from doc/nts_single/ and doc/nts_advanced/
 
 BINARY="./test"
 PASS=0
@@ -89,7 +87,6 @@ run_test_exact() {
     fi
 }
 
-# Expect error exit code 84
 run_test_error() {
     local name="$1"
     local nts_file="$2"
