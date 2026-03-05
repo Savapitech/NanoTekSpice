@@ -1,7 +1,8 @@
 #pragma once
 
-#include <cstdint>
 #include <map>
+#include <set>
+#include <vector>
 
 #include "IComponent.hpp"
 
@@ -9,8 +10,9 @@ namespace nts {
 class AComponent : public IComponent {
 private:
   const std::string _name;
-  std::map<std::size_t, std::pair<nts::IComponent *, std::size_t>> _links;
-  std::uint32_t _i = 0;
+  std::map<std::size_t, std::vector<std::pair<nts::IComponent *, std::size_t>>>
+      _links;
+  std::set<std::size_t> _computingPins;
 
 protected:
   AComponent(const std::string &name);
