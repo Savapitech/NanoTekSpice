@@ -583,13 +583,11 @@ class Handler(http.server.BaseHTTPRequestHandler):
 
 def main():
     port = int(sys.argv[1]) if len(sys.argv) > 1 else PORT
-    server = http.server.HTTPServer(("127.0.0.1", port), Handler)
-    print(f"NanoTekSpice Visualizer running at http://127.0.0.1:{port}")
-    print("Press Ctrl+C to stop")
+    server = http.server.HTTPServer(("0.0.0.0", port), Handler)
+    print(f"NTS Visualizer running at http://0.0.0.0:{port}")
     try:
         server.serve_forever()
     except KeyboardInterrupt:
-        print("\nStopped.")
         server.server_close()
 
 
